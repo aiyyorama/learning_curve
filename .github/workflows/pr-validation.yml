@@ -1,0 +1,21 @@
+name: Release Validation
+
+on:
+  pull_request:
+    branches:
+      - main  # Change this if your default branch is master, develop, etc.
+    paths:
+      - 'release/2026/jun/**' # Only triggers if files in this specific release folder change
+
+jobs:
+  validate-files:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Run validation script
+      run: |
+        chmod +x ./check.sh
+        ./check.sh
