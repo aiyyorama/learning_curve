@@ -1,2 +1,2 @@
-dml/G2450-1234_inset_new_entry.sql
-rollback/Rollback_G2450-1234_inset_new_entry.sql
+dml/G2450-1234_inset_new_entry.txt
+rollback/Rollback_G2450-1234_inset_new_entry.txt
