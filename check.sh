@@ -18,9 +18,14 @@ MISSING_FILES=0
 echo "🔍 Starting validation for files listed in $DELTA_FILE..."
 echo "--------------------------------------------------"
 
-while IFS= read -r line || [ -n "$line" ]; do
-    # Trim whitespace and remove carriage returns (\r)
-    line=$(echo "$line" | tr -d '\r' | xargs)
+# Read file line by line safely using a separate file descriptor (3)
+# This prevents tools inside the loop from stealing the stdin stream
+while IFS= read -r line <&3 || [ -n "$line" ]; do
+    
+    # Trim Windows carriage returns (\r) and leading/trailing whitespace purely in Bash
+    line=$(echo "$line" | tr -d '\r')
+    line="${line#"${line%%[![:space:]]*}"}" # Trim leading
+    line="${line%"${line##*[![:space:]]}"}" # Trim trailing
     
     # Skip empty lines
     [ -z "$line" ] && continue
@@ -51,7 +56,7 @@ while IFS= read -r line || [ -n "$line" ]; do
         fi
     fi
 
-done < "$DELTA_FILE"
+done 3< "$DELTA_FILE" # Attached to file descriptor 3
 
 echo "--------------------------------------------------"
 # Final validation result
